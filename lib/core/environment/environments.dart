@@ -6,15 +6,16 @@ class Environments {
 
   static String get firebaseClientId => dotenv.env['serverClientId'] ?? '';
   static String get apiBaseUrl => dotenv.env['apiBaseUrl'] ?? '';
-
+  
+  static String get versionApp => '1.0.0';
 }
 
 class ImagePaths {
   ImagePaths._();
 
-  static const String startImage = 'assets/images/start_img.png';
-  static const String loginGif = 'assets/images/192432399e346adfe113b36a81f22643.gif';
-  static const String registerGif = 'assets/images/original-6fa9aa5f9425ef0ca93899fd3c428f87.gif';
+  static  String get startImage => 'assets/images/start_img.png';
+  static  String get loginGif => 'assets/images/192432399e346adfe113b36a81f22643.gif';
+  static  String get registerGif => 'assets/images/original-6fa9aa5f9425ef0ca93899fd3c428f87.gif';
   
-  static const String splashAnimation = 'assets/animations/Paperplane.json';
+  static  String get splashAnimation => 'assets/animations/Paperplane.json';
 }

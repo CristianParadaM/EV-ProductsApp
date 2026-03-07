@@ -3,6 +3,8 @@ import 'package:ev_products_app/core/storage/key_value_storage_service_impl.dart
 import 'package:ev_products_app/core/storage/secure_storage_service.dart';
 import 'package:ev_products_app/core/storage/secure_storage_service_impl.dart';
 import 'package:ev_products_app/feature/auth/auth_di.dart';
+import 'package:ev_products_app/feature/layout/presentation/layout_di.dart';
+import 'package:ev_products_app/feature/settings/settings_di.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -33,5 +35,7 @@ class InjectorContainer {
 
   static void _registerFeatures() {
     initAuthFeature();
+    initLayoutFeature();
+    initSettingsFeature();
   }
 }
