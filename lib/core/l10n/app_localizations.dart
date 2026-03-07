@@ -78,6 +78,45 @@ class AppLocalizations {
     en: 'Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number and a special character',
   );
 
+  // Navigation
+  String get navCart => _value(es: 'Carrito', en: 'Cart');
+  String get navProducts => _value(es: 'Productos', en: 'Products');
+  String get navSettings => _value(es: 'Ajustes', en: 'Settings');
+
+  String navLabel(String key) {
+    switch (key) {
+      case 'cart':
+        return navCart;
+      case 'products':
+        return navProducts;
+      case 'settings':
+        return navSettings;
+      default:
+        return key;
+    }
+  }
+
+  // Settings Page
+  String get settingsTitle => _value(es: 'Ajustes', en: 'Settings');
+  String get settingsSubtitle => _value(
+    es: 'Personaliza tu experiencia',
+    en: 'Personalize your experience',
+  );
+  String get settingsAccountSection => _value(es: 'Cuenta', en: 'Account');
+  String get settingsThemeSection => _value(es: 'Tema', en: 'Theme');
+  String get settingsLanguageSection => _value(es: 'Idioma', en: 'Language');
+  String get settingsThemeLight => _value(es: 'Claro', en: 'Light');
+  String get settingsThemeDark => _value(es: 'Oscuro', en: 'Dark');
+  String get settingsLanguageEs => _value(es: 'Espanol', en: 'Spanish');
+  String get settingsLanguageEn => _value(es: 'Ingles', en: 'English');
+  String get settingsVersionLabel => _value(es: 'Version', en: 'Version');
+  String get settingsUnknownUser =>
+      _value(es: 'Usuario sin nombre', en: 'Unknown user');
+  String get settingsUnknownEmail =>
+      _value(es: 'Correo no disponible', en: 'Email unavailable');
+  String get settingsLogoutButton => _value(es: 'Cerrar sesión', en: 'Logout');
+  String get errorPrefix => _value(es: 'Error', en: 'Error');
+
   // Notifications Snackbar
   String get notificationLoginSuccess =>
       _value(es: 'Login exitoso', en: 'Login successful');
@@ -85,6 +124,8 @@ class AppLocalizations {
     es: 'Su registro ha sido exitoso',
     en: 'Your registration was successful',
   );
+    String get notificationLogoutSuccess =>
+      _value(es: 'Cierre de sesión exitoso', en: 'Logout successful');
 }
 
 class _AppLocalizationsDelegate

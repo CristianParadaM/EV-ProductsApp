@@ -35,6 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text("Login exitoso")));
+            context.goNamed("products");
           },
           registered: (user) {
             ScaffoldMessenger.of(context).showSnackBar(
