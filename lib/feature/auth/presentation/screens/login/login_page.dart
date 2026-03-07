@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text("Login exitoso")));
+            context.goNamed("products");
           },
           failure: (error) {
             ScaffoldMessenger.of(

@@ -23,6 +23,7 @@ class StartPage extends StatelessWidget {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(l10.notificationLoginSuccess)));
+            context.goNamed("products");
           },
           failure: (error) {
             ScaffoldMessenger.of(
