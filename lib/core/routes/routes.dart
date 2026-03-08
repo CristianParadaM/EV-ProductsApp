@@ -5,6 +5,9 @@ import 'package:ev_products_app/feature/auth/presentation/screens/register/regis
 import 'package:ev_products_app/feature/auth/presentation/screens/start_page.dart';
 import 'package:ev_products_app/feature/layout/presentation/cubits/layout_cubit.dart';
 import 'package:ev_products_app/feature/layout/presentation/screens/layout.dart';
+import 'package:ev_products_app/feature/products/presentation/cubits/products_cubit.dart';
+import 'package:ev_products_app/feature/products/presentation/screens/detail/detail_screen.dart';
+import 'package:ev_products_app/feature/products/presentation/screens/products/products_screen.dart';
 import 'package:ev_products_app/feature/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,17 +57,37 @@ final appRouter = GoRouter(
           path: '/products',
           name: 'products',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: Center(child: Text('Products Page')),
+            child: BlocProvider(
+              create: (_) =>
+                  InjectorContainer.instance<ProductsCubit>()
+                    ..load(limit: 10, offset: 1),
+              child: ProductsPage(),
+            ),
           ),
         ),
 
-        
+        GoRoute(
+          path: '/product/:productId',
+          name: 'detail',
+          pageBuilder: (context, state) {
+            final productId = int.tryParse(
+              state.pathParameters['productId'] ?? '',
+            );
+
+            return NoTransitionPage(
+              child: BlocProvider(
+                create: (_) => InjectorContainer.instance<ProductsCubit>(),
+                child: DetailPage(productId: productId ?? 0),
+              ),
+            );
+          },
+        ),
+
         GoRoute(
           path: '/cart',
           name: 'cart',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: Center(child: Text('Cart Page')),
-          ),
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: Center(child: Text('Cart Page'))),
         ),
 
         GoRoute(

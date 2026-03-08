@@ -124,8 +124,17 @@ class AppLocalizations {
     es: 'Su registro ha sido exitoso',
     en: 'Your registration was successful',
   );
-    String get notificationLogoutSuccess =>
+  String get notificationLogoutSuccess =>
       _value(es: 'Cierre de sesión exitoso', en: 'Logout successful');
+  String get notificationSectionInBuilding => _value(
+    es: 'Esta sección está en construcción',
+    en: 'This section is under construction',
+  );
+
+  String get searchProducts =>
+      _value(es: 'Buscar productos', en: 'Search products');
+  String get addedToCart =>
+      _value(es: 'Producto agregado al carrito', en: 'Product added to cart');
 }
 
 class _AppLocalizationsDelegate
