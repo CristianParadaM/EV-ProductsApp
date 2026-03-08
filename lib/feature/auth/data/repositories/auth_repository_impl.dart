@@ -6,7 +6,10 @@ import 'package:ev_products_app/feature/auth/data/mappers/user_mapper.dart';
 import 'package:ev_products_app/feature/auth/domain/entities/user_entity.dart';
 import 'package:ev_products_app/feature/auth/domain/repositories/auth_repository.dart';
 
-
+/// Repositorio de autenticacion con estrategia remoto-first.
+///
+/// Si el login remoto por credenciales falla, intenta validar contra cache local
+/// para soportar escenario offline controlado.
 class AuthRepositoryImpl implements AuthRepository {
   final AuthFirebaseDatasource datasource;
   final AuthLocalDatasource datasourceLocal;
@@ -38,6 +41,7 @@ class AuthRepositoryImpl implements AuthRepository {
           .signInWithEmailAndPassword(email, password)
           .timeout(const Duration(seconds: 8));
     } catch (e) {
+      // Fallback local para mantener continuidad en ausencia de red.
       return datasourceLocal.loginWithEmailAndPassword(email, password);
     }
   }
@@ -67,6 +71,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     try {
+      // Tras registro remoto, se sincroniza usuario local para login offline.
       final user = await datasource.registerWithEmailAndPassword(fullName, email, password);
       await datasourceLocal.saveUser(UserMapper.domainToModel(user, password));
       return user;

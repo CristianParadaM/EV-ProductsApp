@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-// Definición de la tipografía personalizada para la aplicación
+/// Escala tipografica central usada por tema claro y oscuro.
+///
+/// Los colores se derivan del `ColorScheme` activo para mantener coherencia
+/// tipografica entre distintos modos de brillo.
 class AppTextTheme {
   static TextTheme baseTextTheme(ColorScheme colorScheme) {
     return TextTheme(

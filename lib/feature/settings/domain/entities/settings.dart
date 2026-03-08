@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Entidad de dominio que agrupa preferencias globales de la app.
 class Settings {
   final ThemeMode themeMode;
   final String language;

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 
+/// Entidad de dominio principal para producto.
 class Product {
   final int id;
   final String name;
@@ -24,6 +25,7 @@ class Product {
   });
 
   void applyRandomDiscount() {
+    // Regla de negocio visual: descuento aleatorio entre 30% y 40%.
     final random = Random();
     int discountPercent = 30 + random.nextInt(11);
     pricediscount = price * (1 - discountPercent / 100);

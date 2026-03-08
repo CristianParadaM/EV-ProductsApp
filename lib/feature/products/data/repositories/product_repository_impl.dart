@@ -4,6 +4,7 @@ import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 import 'package:ev_products_app/feature/products/domain/entities/product.dart';
 import 'package:ev_products_app/feature/products/domain/repositories/products_repository.dart';
 
+/// Repositorio de productos con politica remoto-first y cache local.
 class ProductRepositoryImpl extends ProductsRepository {
   ProductRepositoryImpl({
     required this.remoteDatasource,
@@ -20,6 +21,7 @@ class ProductRepositoryImpl extends ProductsRepository {
       await localDatasource.cacheListProducts(limit, offset, products);
       return products;
     } catch (_) {
+      // Si falla remoto, se intenta responder desde cache local.
       return localDatasource.getListProducts(limit, offset);
     }
   }

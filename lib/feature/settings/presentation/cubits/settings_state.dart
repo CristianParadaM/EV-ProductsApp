@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_state.freezed.dart';
 
+/// Estados de inicializacion y error de configuraciones globales.
 @Freezed()
 class SettingsState with _$SettingsState {
   const factory SettingsState.initial() = _Initial;

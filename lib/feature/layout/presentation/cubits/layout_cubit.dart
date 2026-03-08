@@ -2,6 +2,7 @@ import 'package:ev_products_app/feature/layout/domain/uses_cases/get_items_tabs.
 import 'package:ev_products_app/feature/layout/presentation/cubits/layout_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Gestiona el estado de navegacion base (tabs y estados de carga/error).
 class LayoutCubit extends Cubit<LayoutState> {
   GetItemsTabsUseCase getItemsTabsUseCase;
 

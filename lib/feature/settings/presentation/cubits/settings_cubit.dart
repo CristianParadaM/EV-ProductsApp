@@ -7,6 +7,7 @@ import 'package:ev_products_app/feature/settings/presentation/cubits/settings_st
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Gestiona lectura, aplicacion y persistencia de preferencias de usuario.
 class SettingsCubit extends Cubit<SettingsState> {
   final GetSettings getSettings;
   final SetLanguageApp setLanguageApp;
@@ -23,6 +24,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> load() async {
     emit(const SettingsState.loading());
     try {
+      // Primero intenta cargar preferencias locales para arranque inmediato.
       final localIndex = await _keyValueStorageService.read<int>('localIndex');
       final languageLocal = await _keyValueStorageService.read<String>(
         'language',
@@ -38,6 +40,7 @@ class SettingsCubit extends Cubit<SettingsState> {
           ),
         );
       } else {
+        // Si no hay cache local, usa valores por defecto desde dominio.
         final settings = await getSettings();
         emit(SettingsState.loaded(settings: settings));
       }
@@ -48,6 +51,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> changeLanguage(String newLanguage) async {
     try {
+      // Se persiste local y luego se notifica al caso de uso.
       await _keyValueStorageService.write('language', newLanguage);
       await setLanguageApp(newLanguage);
       load();
@@ -58,6 +62,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> changeTheme(ThemeMode newTheme) async {
     try {
+      // Se persiste indice para facilitar reconstruccion del ThemeMode.
       await _keyValueStorageService.write('localIndex', newTheme.index);
       await setThemeApp(newTheme);
       load();

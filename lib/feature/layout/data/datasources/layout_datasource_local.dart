@@ -2,6 +2,9 @@ import 'package:ev_products_app/feature/layout/data/datasources/abs_layout_datas
 import 'package:ev_products_app/feature/layout/domain/entities/page_item.dart';
 import 'package:flutter/material.dart';
 
+/// Fuente local de tabs de navegacion.
+///
+/// Mantiene un catalogo estatico de rutas para que la UI no dependa de red.
 class LayoutDatasourceLocal extends AbsLayoutDatasource {
 
   @override

@@ -3,6 +3,9 @@ import 'dart:typed_data';
 
 import 'package:argon2/argon2.dart';
 
+/// Utilidad criptografica para hash y verificacion de passwords.
+///
+/// Usa Argon2id con parametros fijos para equilibrio entre seguridad y costo.
 class PasswordHasher {
   PasswordHasher._();
 
@@ -25,6 +28,7 @@ class PasswordHasher {
     required String password,
     required String encodedHash,
   }) {
+    // Formato esperado: algoritmo$v=version$m=...,t=...,p=...$salt$hash
     final parts = encodedHash.split(r'$');
     if (parts.length != 5 || parts[0] != _algorithm) {
       return false;
@@ -145,6 +149,7 @@ class PasswordHasher {
     }
 
     var diff = 0;
+    // Comparacion en tiempo constante para reducir riesgo de timing attacks.
     for (var i = 0; i < a.length; i++) {
       diff |= a[i] ^ b[i];
     }

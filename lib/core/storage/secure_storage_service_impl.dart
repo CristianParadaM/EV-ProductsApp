@@ -1,6 +1,8 @@
 import 'package:ev_products_app/core/storage/secure_storage_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/// Adaptador sobre `FlutterSecureStorage` para aislar infraestructura de las
+/// capas de feature/dominio.
 class SecureStorageServiceImpl extends SecureStorageService {
   final FlutterSecureStorage secureStorage;
 

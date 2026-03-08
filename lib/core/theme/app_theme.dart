@@ -1,7 +1,10 @@
 import 'package:ev_products_app/core/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 
-// Definición de los temas de la aplicación
+/// Sistema visual global de la aplicacion.
+///
+/// Las variantes clara y oscura comparten un mismo builder para alinear
+/// estilos de componentes y reducir divergencias entre modos.
 class AppTheme {
   static const Color _lightPrimary = Colors.deepOrange;
   static const Color _darkPrimary = Color(0xFFFF8A65);
@@ -34,7 +37,7 @@ class AppTheme {
         onSecondary: Colors.white,
       );
 
-  // Método privado para construir el tema a partir de un esquema de colores
+  /// Fabrica comun de ThemeData para ambos modos de brillo.
   static ThemeData _buildTheme(
     ColorScheme colorScheme,
     Color scaffoldBackgroundColor,
@@ -117,7 +120,7 @@ class AppTheme {
     );
   }
 
-  // Temas claros de la aplicación utilizando el método de construcción
+  /// Configuracion del modo claro.
   static final ThemeData lightTheme = _buildTheme(
     _lightColorScheme,
     const Color(0xFFF8FAFC),
@@ -126,7 +129,7 @@ class AppTheme {
     const Color(0xFFF6E3ED),
   );
 
-  // Temas oscuros de la aplicación utilizando el método de construcción
+  /// Configuracion del modo oscuro.
   static final ThemeData darkTheme = _buildTheme(
     _darkColorScheme,
     const Color(0xFF121212),

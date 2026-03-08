@@ -7,6 +7,7 @@ import 'package:ev_products_app/feature/auth/domain/usesCases/register_with_cred
 import 'package:ev_products_app/feature/auth/presentation/cubits/login_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Orquesta el flujo de autenticacion y traduce resultados a estados de UI.
 class AuthCubit extends Cubit<LoginState> {
   final LoginCredentialsUseCase loginCredentialsUseCase;
   final LogoutUseCase logoutUseCase;

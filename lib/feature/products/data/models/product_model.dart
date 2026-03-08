@@ -1,3 +1,4 @@
+/// Modelo crudo de producto alineado con el payload remoto.
 class ProductModel {
   final int id;
   final String title;

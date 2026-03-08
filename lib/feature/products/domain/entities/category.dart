@@ -1,3 +1,4 @@
+/// Entidad de dominio para categoria de productos.
 class Category {
   final int id;
   final String name;

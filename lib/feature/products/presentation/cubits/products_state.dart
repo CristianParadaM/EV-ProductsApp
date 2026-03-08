@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'products_state.freezed.dart';
 
+/// Estados posibles del flujo de productos y detalle.
 @freezed
 class ProductsState with _$ProductsState {
   /// Estado inicial

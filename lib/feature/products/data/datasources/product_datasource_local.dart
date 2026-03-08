@@ -7,6 +7,9 @@ import 'package:ev_products_app/feature/products/data/mappers/product_mapper.dar
 import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 import 'package:ev_products_app/feature/products/domain/entities/product.dart';
 
+/// Datasource local de productos basado en cache SQLite.
+///
+/// Persiste listado, destacados, categorias y detalle para fallback offline.
 class ProductDatasourceLocal extends ProductDatasource {
   final SqliteKeyValueCache _storage;
 
@@ -108,6 +111,7 @@ class ProductDatasourceLocal extends ProductDatasource {
       return ProductMapper.productFromMap(decoded);
     }
 
+    // Fallback secundario: buscar en destacados si no existe detalle dedicado.
     final featured = await _safeGetProducts(_featuredKey);
     for (final product in featured) {
       if (product.id == productId) {

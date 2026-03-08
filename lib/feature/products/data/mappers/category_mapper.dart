@@ -2,6 +2,7 @@
 import 'package:ev_products_app/feature/products/data/models/category_model.dart';
 import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 
+/// Mapper entre modelo de categoria y entidad de dominio.
 class CategoryMapper {
 
   static Category modelToDomain(CategoryModel model) {

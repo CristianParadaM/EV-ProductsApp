@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:ev_products_app/core/environment/environments.dart';
 
+/// Envoltorio liviano de Dio para centralizar defaults de HTTP.
+///
+/// Mantener aqui base URL, timeouts y headers evita repetir configuracion de
+/// requests en repositorios y data sources.
 class ClientApi {
   final Dio dio;
 
@@ -49,10 +53,12 @@ class ClientApi {
     return dio.delete<T>(path, data: data, queryParameters: queryParameters);
   }
 
+  /// Inyecta el bearer token globalmente para requests autenticados.
   void setAuthToken(String token) {
     dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
+  /// Elimina el bearer token para evitar fugas de estado tras el logout.
   void clearAuthToken() {
     dio.options.headers.remove('Authorization');
   }
