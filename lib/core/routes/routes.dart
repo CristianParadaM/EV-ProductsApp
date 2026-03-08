@@ -6,10 +6,10 @@ import 'package:ev_products_app/feature/auth/presentation/screens/start_page.dar
 import 'package:ev_products_app/feature/layout/presentation/cubits/layout_cubit.dart';
 import 'package:ev_products_app/feature/layout/presentation/screens/layout.dart';
 import 'package:ev_products_app/feature/products/presentation/cubits/products_cubit.dart';
+import 'package:ev_products_app/feature/products/presentation/screens/cart/cart_screen.dart';
 import 'package:ev_products_app/feature/products/presentation/screens/detail/detail_screen.dart';
 import 'package:ev_products_app/feature/products/presentation/screens/products/products_screen.dart';
 import 'package:ev_products_app/feature/settings/presentation/screens/settings_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,8 +59,7 @@ final appRouter = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider(
               create: (_) =>
-                  InjectorContainer.instance<ProductsCubit>()
-                    ..load(limit: 10, offset: 1),
+                  InjectorContainer.instance<ProductsCubit>()..load(limit: 10, offset: 1),
               child: ProductsPage(),
             ),
           ),
@@ -82,12 +81,13 @@ final appRouter = GoRouter(
             );
           },
         ),
-
+        
         GoRoute(
           path: '/cart',
           name: 'cart',
-          pageBuilder: (context, state) =>
-              NoTransitionPage(child: Center(child: Text('Cart Page'))),
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: CartPage(),
+          ),
         ),
 
         GoRoute(

@@ -62,8 +62,8 @@ class AuthFirebaseDatasourceImpl extends AuthFirebaseDatasource {
         email: userCredential.user?.email ?? "",
         name: userCredential.user?.displayName ?? "",
       );
-    } on FirebaseAuthException catch (e) {
-      throw Exception('Error signing in with Google [${e.code}]: ${e.message}');
+    } on GoogleSignInException catch (_) {
+      throw Exception('Error signing with google, check your internet conection');
     } catch (e) {
       throw Exception('Error signing in with Google: $e');
     }
@@ -102,9 +102,9 @@ class AuthFirebaseDatasourceImpl extends AuthFirebaseDatasource {
         email: userCredential.user?.email ?? "",
         name: userCredential.user?.displayName ?? "",
       );
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (_) {
       throw Exception(
-        'Error signing in with Facebook [${e.code}]: ${e.message}',
+        'Error signing in with Facebook, check your internet connection and make sure you have the Facebook app installed',
       );
     } catch (e) {
       throw Exception('Error signing in with Facebook: $e');

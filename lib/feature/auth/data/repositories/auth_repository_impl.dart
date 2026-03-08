@@ -1,12 +1,17 @@
+import 'dart:async';
 
 import 'package:ev_products_app/feature/auth/data/datasources/auth_firebase_datasource.dart';
+import 'package:ev_products_app/feature/auth/data/datasources/auth_local_datasource.dart';
+import 'package:ev_products_app/feature/auth/data/mappers/user_mapper.dart';
 import 'package:ev_products_app/feature/auth/domain/entities/user_entity.dart';
 import 'package:ev_products_app/feature/auth/domain/repositories/auth_repository.dart';
 
+
 class AuthRepositoryImpl implements AuthRepository {
   final AuthFirebaseDatasource datasource;
+  final AuthLocalDatasource datasourceLocal;
 
-  AuthRepositoryImpl(this.datasource);
+  AuthRepositoryImpl(this.datasource, this.datasourceLocal);
 
   @override
   Future<UserApp> loginFacebook() {
@@ -27,11 +32,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserApp> loginWithCredentials(String email, String password) {
+  Future<UserApp> loginWithCredentials(String email, String password) async {
     try {
-      return datasource.signInWithEmailAndPassword(email, password);
+      return await datasource
+          .signInWithEmailAndPassword(email, password)
+          .timeout(const Duration(seconds: 8));
     } catch (e) {
-      throw Exception('Error en login con email y contraseña: ${e.toString()}');
+      return datasourceLocal.loginWithEmailAndPassword(email, password);
     }
   }
 
@@ -58,9 +65,11 @@ class AuthRepositoryImpl implements AuthRepository {
     String fullName,
     String email,
     String password,
-  ) {
+  ) async {
     try {
-      return datasource.registerWithEmailAndPassword(fullName, email, password);
+      final user = await datasource.registerWithEmailAndPassword(fullName, email, password);
+      await datasourceLocal.saveUser(UserMapper.domainToModel(user, password));
+      return user;
     } catch (e) {
       throw Exception('Error en registerWithCredentials: ${e.toString()}');
     }

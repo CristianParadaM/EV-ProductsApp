@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ev_products_app/core/environment/environments.dart';
 import 'package:ev_products_app/core/l10n/app_localizations.dart';
+import 'package:ev_products_app/core/network/connectivity_cubit.dart';
+import 'package:ev_products_app/core/utils/height_util.dart';
 import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 import 'package:ev_products_app/feature/products/domain/entities/product.dart';
 import 'package:ev_products_app/feature/products/presentation/cubits/products_cubit.dart';
 import 'package:ev_products_app/feature/products/presentation/cubits/products_state.dart';
-import 'package:ev_products_app/feature/snack_bar/snack_bar_custom.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:ev_products_app/feature/shared/snack_bar/snack_bar_custom.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -174,18 +177,52 @@ class _ProductsPageState extends State<ProductsPage>
           ),
         ),
       ),
-      body: BlocBuilder<ProductsCubit, ProductsState>(
-        builder: (context, state) {
-          return state.when(
-            initial: () => const SizedBox.shrink(),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            loaded: (featuredProducts, products, categories) =>
-                _buildProducts(context, featuredProducts, products, categories),
-            error: (message) =>
-                Center(child: Text('Error: ${message.toString()}')),
-            detailLoaded: (product) => const SizedBox.shrink(),
-          );
+      body: BlocListener<ConnectivityCubit, ConnectivityStatus>(
+        listener: (context, status) {
+          if (status == ConnectivityStatus.online) {
+            context.read<ProductsCubit>().load(limit: 10, offset: 1);
+          }
         },
+        child: BlocBuilder<ProductsCubit, ProductsState>(
+          builder: (context, state) {
+            return state.when(
+              initial: () => const SizedBox.shrink(),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              loaded: (featuredProducts, products, categories) =>
+                  _buildProducts(
+                    context,
+                    featuredProducts,
+                    products,
+                    categories,
+                  ),
+              error: (message) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        ImagePaths.errorCachedProducts,
+                        height: HeightUtil.getHeightDevice(context, 150),
+                      ),
+                      Text(
+                        l10n.emptyCachedProducts,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () => context.read<ProductsCubit>().load(),
+                        child: const Text('Reintentar'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              detailLoaded: (product) => const SizedBox.shrink(),
+            );
+          },
+        ),
       ),
     );
   }
@@ -366,16 +403,32 @@ class _ProductsPageState extends State<ProductsPage>
         mainAxisAlignment: MainAxisAlignment.center,
         children: categories.map((category) {
           return Container(
-            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            margin: EdgeInsets.symmetric(
+              horizontal: HeightUtil.getHeightDevice(context, 8),
+              vertical: 12,
+            ),
             child: Column(
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    category.image,
-                    width: 64,
-                    height: 64,
+                  child: CachedNetworkImage(
+                    imageUrl: category.image,
+                    width: HeightUtil.getHeightDevice(context, 64),
+                    height: HeightUtil.getHeightDevice(context, 64),
                     fit: BoxFit.cover,
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        width: HeightUtil.getHeightDevice(context, 64),
+                        height: HeightUtil.getHeightDevice(context, 64),
+                        color: Colors.grey.withValues(alpha: 0.24),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.image_not_supported_outlined,
+                          size: 28,
+                          color: Colors.grey,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -430,10 +483,19 @@ class _ProductGridCard extends StatelessWidget {
                         alignment: Alignment.center,
                         child: const Icon(Icons.image_not_supported_outlined),
                       )
-                    : Image.asset(
-                        image,
+                    : CachedNetworkImage(
+                        imageUrl: image,
                         width: double.infinity,
                         fit: BoxFit.cover,
+                        errorWidget: (context, url, error) {
+                          return Container(
+                            color: theme.colorScheme.surfaceContainerHighest,
+                            alignment: Alignment.center,
+                            child: const Icon(
+                              Icons.image_not_supported_outlined,
+                            ),
+                          );
+                        },
                       ),
               ),
             ),
@@ -493,7 +555,20 @@ class _FeaturedProductPreview extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset(product.imagesUrl[0], fit: BoxFit.cover),
+            CachedNetworkImage(
+              imageUrl: product.imagesUrl[0],
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) {
+                return Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 48,
+                  ),
+                );
+              },
+            ),
             DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

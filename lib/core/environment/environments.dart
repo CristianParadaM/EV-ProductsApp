@@ -7,6 +7,7 @@ class Environments {
   static String get apiBaseUrl => dotenv.env['apiBaseUrl'] ?? '';
 
   static String get versionApp => '1.0.0';
+  static int get dpHeightBaseline => 952;
 }
 
 class ImagePaths {
@@ -19,6 +20,12 @@ class ImagePaths {
       'assets/images/original-6fa9aa5f9425ef0ca93899fd3c428f87.gif';
 
   static String get splashAnimation => 'assets/animations/Paperplane.json';
+
   static String get bannerTennis => 'assets/images/BANNER_DESTOK_ATZI.webp';
   static String get bannerDiscountsApp => 'assets/images/Discounts.png';
+  static String get errorCachedProducts =>
+      'assets/images/output-onlinegiftools2.gif';
+
+  static String get underConstruction =>
+      'assets/images/output-onlinegiftools5.gif';
 }
