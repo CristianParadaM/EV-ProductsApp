@@ -1,10 +1,12 @@
-import 'package:ev_products_app/core/environment/environments.dart';
-import 'package:ev_products_app/core/l10n/app_localizations.dart';
-import 'package:ev_products_app/feature/auth/presentation/cubits/login_cubit.dart';
-import 'package:ev_products_app/feature/auth/presentation/cubits/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ev_products_app/core/environment/environments.dart';
+import 'package:ev_products_app/core/l10n/app_localizations.dart';
+import 'package:ev_products_app/core/utils/height_util.dart';
+import 'package:ev_products_app/feature/auth/presentation/cubits/login_cubit.dart';
+import 'package:ev_products_app/feature/auth/presentation/cubits/login_state.dart';
+import 'package:ev_products_app/feature/shared/snack_bar/snack_bar_custom.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -17,18 +19,15 @@ class StartPage extends StatelessWidget {
 
     return BlocConsumer<AuthCubit, LoginState>(
       listener: (context, state) {
+        final l10n = AppLocalizations.of(context);
         state.maybeWhen(
           orElse: () {},
           authenticated: (user) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(l10.notificationLoginSuccess)));
-            context.goNamed("products");
+            SnackbarCustom(context).showSuccess(l10n.notificationLoginSuccess, margin: EdgeInsets.only(bottom: 110, left: 20, right: 20));
+            context.goNamed('products');
           },
           failure: (error) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Error: $error')));
+            SnackbarCustom(context).showError('Error ${error.toString()}');
           },
         );
       },
@@ -53,7 +52,7 @@ class StartPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Image.asset(ImagePaths.startImage),
+                      Image.asset(ImagePaths.startImage, height: HeightUtil.getHeightDevice(context, 390)),
                       Text(
                         l10.appStartTitle,
                         textAlign: TextAlign.center,

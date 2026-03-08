@@ -1,5 +1,3 @@
-
-
 import 'package:ev_products_app/feature/auth/domain/repositories/auth_repository.dart';
 
 class LogoutUseCase {

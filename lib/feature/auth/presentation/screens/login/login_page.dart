@@ -1,10 +1,12 @@
-import 'package:ev_products_app/core/environment/environments.dart';
-import 'package:ev_products_app/core/l10n/app_localizations.dart';
-import 'package:ev_products_app/feature/auth/presentation/cubits/login_cubit.dart';
-import 'package:ev_products_app/feature/auth/presentation/cubits/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ev_products_app/core/environment/environments.dart';
+import 'package:ev_products_app/core/l10n/app_localizations.dart';
+import 'package:ev_products_app/core/utils/height_util.dart';
+import 'package:ev_products_app/feature/auth/presentation/cubits/login_cubit.dart';
+import 'package:ev_products_app/feature/auth/presentation/cubits/login_state.dart';
+import 'package:ev_products_app/feature/shared/snack_bar/snack_bar_custom.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,18 +27,18 @@ class _LoginPageState extends State<LoginPage> {
 
     return BlocConsumer<AuthCubit, LoginState>(
       listener: (context, state) {
+        final l10n = AppLocalizations.of(context);
         state.maybeWhen(
           orElse: () {},
           authenticated: (user) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text("Login exitoso")));
+            SnackbarCustom(context).showSuccess(
+              l10n.notificationLoginSuccess,
+              margin: EdgeInsets.only(bottom: 110, left: 20, right: 20),
+            );
             context.goNamed("products");
           },
           failure: (error) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Error: $error")));
+            SnackbarCustom(context).showError('Error ${error.toString()}');
           },
         );
       },
@@ -84,138 +86,147 @@ class _LoginPageState extends State<LoginPage> {
   ) {
     final l10 = AppLocalizations.of(context);
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                l10.loginTitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.displayLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                l10.loginSubtitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Image.asset(  
-                ImagePaths.loginGif,
-                height: 200,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                enabled: !isLoading,
-                decoration: InputDecoration(
-                  labelText: l10.emailLabel,
-                  prefixIcon: Icon(Icons.email_outlined),
-                ),
-                validator: (value) {
-                  final email = value?.trim() ?? '';
-                  if (email.isEmpty) {
-                    return l10.requiredValue;
-                  }
-                  final isValidEmail = RegExp(
-                    r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                  ).hasMatch(email);
-                  if (!isValidEmail) {
-                    return l10.invalidEmail;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: passwordController,
-                obscureText: _obscurePassword,
-                enabled: !isLoading,
-                decoration: InputDecoration(
-                  labelText: l10.passwordLabel,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                    ),
-                  ),
-                ),
-                validator: (value) {
-                  final password = value ?? '';
-                  if (password.isEmpty) {
-                    return l10.requiredValue;
-                  }
-                  return null;
-                },
-              ),
-              // Forgot password? (opcional)
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    // Acción para recuperar contraseña
-                  },
-                  child: Text(l10.forgotPassword),
-                ),
-              ),
-              const SizedBox(height: 20),
-              FilledButton(
-                onPressed: isLoading ? null : () => _onSubmit(context),
-                child: Text(l10.loginButton),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.goNamed("register");
-                },
-                child: Text(l10.createNewAccount),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                l10.orLoginWith,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 12),
-              Row(
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height,
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: isLoading
-                          ? null
-                          : () => _loginFacebook(context),
-                      icon: const Icon(Icons.facebook_rounded),
-                      label: const Text("Facebook"),
+                  Text(
+                    l10.loginTitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.displayLarge?.copyWith(
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: isLoading ? null : () => _loginGoogle(context),
-                      icon: const Icon(Icons.g_mobiledata),
-                      label: const Text("Google"),
+                  const SizedBox(height: 10),
+                  Text(
+                    l10.loginSubtitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  Image.asset(
+                    ImagePaths.loginGif,
+                    height: HeightUtil.getHeightDevice(context, 200),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    enabled: !isLoading,
+                    decoration: InputDecoration(
+                      labelText: l10.emailLabel,
+                      prefixIcon: Icon(Icons.email_outlined),
+                    ),
+                    validator: (value) {
+                      final email = value?.trim() ?? '';
+                      if (email.isEmpty) {
+                        return l10.requiredValue;
+                      }
+                      final isValidEmail = RegExp(
+                        r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                      ).hasMatch(email);
+                      if (!isValidEmail) {
+                        return l10.invalidEmail;
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: _obscurePassword,
+                    enabled: !isLoading,
+                    decoration: InputDecoration(
+                      labelText: l10.passwordLabel,
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      final password = value ?? '';
+                      if (password.isEmpty) {
+                        return l10.requiredValue;
+                      }
+                      return null;
+                    },
+                  ),
+                  // Forgot password? (opcional)
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        SnackbarCustom(context).showInfo(l10.notificationSectionInBuilding);
+                      },
+                      child: Text(l10.forgotPassword),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  FilledButton(
+                    onPressed: isLoading ? null : () => _onSubmit(context),
+                    child: Text(l10.loginButton),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.goNamed("register");
+                    },
+                    child: Text(l10.createNewAccount),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    l10.orLoginWith,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: isLoading
+                              ? null
+                              : () => _loginFacebook(context),
+                          icon: const Icon(Icons.facebook_rounded),
+                          label: const Text("Facebook"),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: isLoading
+                              ? null
+                              : () => _loginGoogle(context),
+                          icon: const Icon(Icons.g_mobiledata),
+                          label: const Text("Google"),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
