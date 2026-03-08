@@ -96,6 +96,8 @@ class AppLocalizations {
     }
   }
 
+  String get productsTitle => _value(es: 'Productos', en: 'Products');
+
   // Settings Page
   String get settingsTitle => _value(es: 'Ajustes', en: 'Settings');
   String get settingsSubtitle => _value(
@@ -117,15 +119,24 @@ class AppLocalizations {
   String get settingsLogoutButton => _value(es: 'Cerrar sesión', en: 'Logout');
   String get errorPrefix => _value(es: 'Error', en: 'Error');
 
+  // Cart Page
+  String get cartTitle => _value(es: 'Carrito', en: 'Cart');
+  String get screenInConstruction =>
+      _value(es: 'Pantalla en construcción', en: 'Screen in construction');
+
   // Notifications Snackbar
+  String get notificationLogoutSuccess =>
+      _value(es: 'Cierre de sesión exitoso', en: 'Logout successful');
   String get notificationLoginSuccess =>
       _value(es: 'Login exitoso', en: 'Login successful');
   String get notificationRegisterSuccess => _value(
     es: 'Su registro ha sido exitoso',
     en: 'Your registration was successful',
   );
-  String get notificationLogoutSuccess =>
-      _value(es: 'Cierre de sesión exitoso', en: 'Logout successful');
+  String get screenInConstructionMessage => _value(
+    es: 'Estamos trabajando en esta funciónalidad, esperamos tenerla lista pronto!',
+    en: 'We hope to have it ready soon!',
+  );
   String get notificationSectionInBuilding => _value(
     es: 'Esta sección está en construcción',
     en: 'This section is under construction',
@@ -133,8 +144,22 @@ class AppLocalizations {
 
   String get searchProducts =>
       _value(es: 'Buscar productos', en: 'Search products');
+
   String get addedToCart =>
       _value(es: 'Producto agregado al carrito', en: 'Product added to cart');
+
+  String get emptyCachedProducts => _value(
+    es: 'Ups!, parece que no hay productos guardados previamente en caché',
+    en: 'Ups!, it seems there are no previously cached products saved',
+  );
+
+  String get offlineMessage => _value(
+    es: 'Sin conexión. Mostrando datos guardados. Conectate para sincronizar información',
+    en: 'No connection. Showing cached data. Connect to synchronize information',
+  );
+
+  String get onlineMessage =>
+      _value(es: 'Conexión restablecida.', en: 'Connection restored.');
 }
 
 class _AppLocalizationsDelegate
