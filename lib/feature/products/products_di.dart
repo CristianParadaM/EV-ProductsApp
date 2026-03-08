@@ -1,15 +1,16 @@
+import 'package:get_it/get_it.dart';
 import 'package:ev_products_app/core/di/injector_container.dart';
 import 'package:ev_products_app/feature/products/data/datasources/product_datasource.dart';
 import 'package:ev_products_app/feature/products/data/datasources/product_datasource_api.dart';
+import 'package:ev_products_app/feature/products/data/datasources/product_datasource_local.dart';
 import 'package:ev_products_app/feature/products/data/repositories/product_repository_impl.dart';
 import 'package:ev_products_app/feature/products/domain/repositories/products_repository.dart';
-import 'package:ev_products_app/feature/products/domain/uses_cases/get_categories.dart';
 import 'package:ev_products_app/feature/products/domain/uses_cases/get_detailProduct.dart';
-import 'package:ev_products_app/feature/products/domain/uses_cases/get_featured_products.dart';
 import 'package:ev_products_app/feature/products/domain/uses_cases/get_products.dart';
+import 'package:ev_products_app/feature/products/domain/uses_cases/get_featured_products.dart';
 import 'package:ev_products_app/feature/products/domain/uses_cases/get_products_by_category.dart';
+import 'package:ev_products_app/feature/products/domain/uses_cases/get_categories.dart';
 import 'package:ev_products_app/feature/products/presentation/cubits/products_cubit.dart';
-import 'package:get_it/get_it.dart';
 
 void initProductsFeature() {
   final GetIt instance = InjectorContainer.instance;
@@ -43,7 +44,11 @@ void initProductsFeature() {
   instance.registerLazySingleton<ProductsRepository>(
     () => ProductRepositoryImpl(
       remoteDatasource: instance<ProductDatasource>(),
+      localDatasource: instance<ProductDatasourceLocal>(),
     ),
+  );
+  instance.registerLazySingleton<ProductDatasourceLocal>(
+    () => ProductDatasourceLocal(instance()),
   );
   // datasources
   instance.registerLazySingleton<ProductDatasource>(

@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ev_products_app/core/l10n/app_localizations.dart';
 import 'package:ev_products_app/feature/products/domain/entities/product.dart';
 import 'package:ev_products_app/feature/products/presentation/cubits/products_cubit.dart';
 import 'package:ev_products_app/feature/products/presentation/cubits/products_state.dart';
-import 'package:ev_products_app/feature/snack_bar/snack_bar_custom.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:ev_products_app/feature/shared/snack_bar/snack_bar_custom.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key, required this.productId});
@@ -216,7 +217,20 @@ class _DetailPageState extends State<DetailPage> {
                 return InteractiveViewer(
                   minScale: 1,
                   maxScale: 3,
-                  child: Image.asset(imageUrl, fit: BoxFit.contain),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.image_not_supported_outlined,
+                          size: 64,
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -261,7 +275,20 @@ class _DetailPageState extends State<DetailPage> {
                               alignment: Alignment.center,
                               child: const Icon(Icons.image),
                             )
-                          : Image.asset(imageUrl, fit: BoxFit.cover),
+                          : CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                return Container(
+                                  color:
+                                      theme.colorScheme.surfaceContainerHighest,
+                                  alignment: Alignment.center,
+                                  child: const Icon(
+                                    Icons.broken_image_outlined,
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ),
                 );
