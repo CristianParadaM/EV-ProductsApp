@@ -1,3 +1,4 @@
+/// Modelo de datos para almacenamiento local de usuario autenticado.
 class UserModel {
   final String id;
   final String email;

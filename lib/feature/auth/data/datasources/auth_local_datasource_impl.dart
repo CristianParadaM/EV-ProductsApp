@@ -6,7 +6,9 @@ import 'package:ev_products_app/feature/auth/data/models/user_model.dart';
 import 'package:ev_products_app/feature/auth/data/security/password_hasher.dart';
 import 'package:ev_products_app/feature/auth/domain/entities/user_entity.dart';
 
-
+/// Implementacion local de autenticacion respaldada en SQLite key-value.
+///
+/// Se usa como fallback cuando el login remoto falla o no hay conectividad.
 class AuthLocalDatasourceImpl extends AuthLocalDatasource {
   final SqliteKeyValueCache _storage;
 
@@ -14,6 +16,7 @@ class AuthLocalDatasourceImpl extends AuthLocalDatasource {
     registerDefaultUser();
   }
 
+  /// Crea un usuario semilla para pruebas solo si no existe previamente.
   Future<void> registerDefaultUser() async {
     final rawUser = await _storage.readString('user_admin@evertec.com');
     if (rawUser != null) {
@@ -31,6 +34,7 @@ class AuthLocalDatasourceImpl extends AuthLocalDatasource {
     String email,
     String password,
   ) async {
+    // Se normaliza email para evitar claves distintas por mayusculas/espacios.
     final normalizedEmail = email.trim().toLowerCase();
     final rawUser = await _storage.readString('user_$normalizedEmail');
 

@@ -1,6 +1,7 @@
 
 import 'package:ev_products_app/feature/auth/domain/entities/user_entity.dart';
 
+/// Contrato de casos de autenticacion disponible para dominio.
 abstract class AuthRepository {
   Future<UserApp> loginWithCredentials(String email, String password);
   Future<UserApp> loginGoogle();

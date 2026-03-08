@@ -1,5 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/// Constantes de ejecucion y valores respaldados por `.env`.
+///
+/// Los fallbacks a cadena vacia evitan propagacion de null al iniciar; la
+/// validacion de variables requeridas debe hacerse en la capa consumidora.
 class Environments {
   Environments._();
 
@@ -10,6 +14,7 @@ class Environments {
   static int get dpHeightBaseline => 952;
 }
 
+/// Rutas de assets centralizadas para evitar duplicacion de strings en UI.
 class ImagePaths {
   ImagePaths._();
 

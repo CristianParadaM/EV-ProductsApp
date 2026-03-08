@@ -1,6 +1,10 @@
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
+/// Cache key-value en SQLite para payloads que deben sobrevivir reinicios.
+///
+/// Frente a SharedPreferences, resulta mas adecuado para blobs de texto grandes
+/// (por ejemplo respuestas de API serializadas).
 class SqliteKeyValueCache {
   static const _dbName = 'products_cache.db';
   static const _tableName = 'cache_entries';
@@ -19,6 +23,7 @@ class SqliteKeyValueCache {
       path,
       version: 1,
       onCreate: (db, version) async {
+        // `updated_at` permite estrategias futuras de invalidacion/TTL.
         await db.execute('''
           CREATE TABLE $_tableName(
             key TEXT PRIMARY KEY,
@@ -34,6 +39,7 @@ class SqliteKeyValueCache {
 
   Future<void> writeString(String key, String value) async {
     final db = await _db;
+    // Semantica upsert para mantener una unica fila por clave.
     await db.insert(_tableName, {
       'key': key,
       'value': value,

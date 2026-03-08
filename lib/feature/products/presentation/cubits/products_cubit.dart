@@ -8,6 +8,7 @@ import 'package:ev_products_app/feature/products/domain/uses_cases/get_products_
 import 'package:ev_products_app/feature/products/presentation/cubits/products_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Gestiona carga inicial, paginacion y detalle del catalogo de productos.
 class ProductsCubit extends Cubit<ProductsState> {
   final GetProducts getProducts;
   final GetCategories getCategories;
@@ -27,6 +28,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     List<Product> products,
     List<Product> featuredProducts,
   ) {
+    // Indexar destacados por id evita busqueda O(n*m) al mezclar listas.
     final featuredById = {
       for (final featured in featuredProducts) featured.id: featured,
     };
@@ -61,6 +63,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
     emit(ProductsState.loading());
     try {
+      // Se paraleliza para reducir tiempo total de primera carga.
       final results = await Future.wait([
         getFeaturedProducts(),
         getProducts(limit, offset),

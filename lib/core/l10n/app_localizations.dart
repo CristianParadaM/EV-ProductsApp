@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+/// Catalogo de localizacion en codigo para `es` y `en`.
+///
+/// Este proyecto usa un enfoque manual en lugar de ARB generado para mantener
+/// la logica de resolucion explicita y facil de rastrear.
 class AppLocalizations {
   AppLocalizations(this.locale);
 
@@ -22,6 +26,9 @@ class AppLocalizations {
 
   String get _languageCode => locale.languageCode.toLowerCase();
 
+  /// Selector minimo usado por todos los getters de texto.
+  ///
+  /// Cualquier codigo de idioma no soportado cae a espanol por diseno.
   String _value({required String es, required String en}) {
     return _languageCode == 'en' ? en : es;
   }
@@ -92,6 +99,7 @@ class AppLocalizations {
       case 'settings':
         return navSettings;
       default:
+        // Las claves desconocidas se retornan intactas para no romper la UI.
         return key;
     }
   }
@@ -175,6 +183,7 @@ class _AppLocalizationsDelegate
 
   @override
   Future<AppLocalizations> load(Locale locale) {
+    // SynchronousFuture evita planificacion async innecesaria en datos en memoria.
     return SynchronousFuture<AppLocalizations>(AppLocalizations(locale));
   }
 

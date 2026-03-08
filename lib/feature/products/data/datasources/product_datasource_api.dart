@@ -10,6 +10,9 @@ import 'package:ev_products_app/feature/products/data/models/product_model.dart'
 import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 import 'package:ev_products_app/feature/products/domain/entities/product.dart';
 
+/// Datasource remoto de productos sobre API HTTP.
+///
+/// Incluye pre-calentamiento de imagenes en cache para mejorar UX en scroll.
 class ProductDatasourceAPI extends ProductDatasource {
   final ClientApi clientApi;
   final BaseCacheManager _cacheManager;
@@ -29,6 +32,7 @@ class ProductDatasourceAPI extends ProductDatasource {
   }
 
   void _primeProductImages(List<Product> products) {
+    // Se deduplican URLs para evitar descargas repetidas innecesarias.
     final urls = <String>{
       for (final product in products) ...product.imagesUrl.where((url) => url.isNotEmpty),
     };

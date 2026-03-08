@@ -13,6 +13,11 @@ import 'package:ev_products_app/feature/settings/settings_di.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/// Punto central de inyeccion de dependencias.
+///
+/// La app inicializa primero infraestructura compartida (storage/red) y luego
+/// los modulos de features. Este orden garantiza que los registros de features
+/// puedan depender de servicios core ya disponibles en GetIt.
 class InjectorContainer {
   InjectorContainer._();
 
@@ -31,6 +36,10 @@ class InjectorContainer {
     instance.registerLazySingleton(() => SqliteKeyValueCache());
   }
 
+  /// Registra servicios transversales como lazy singletons.
+  ///
+  /// Estas instancias estan pensadas para compartirse entre features y vivir
+  /// durante todo el ciclo de vida de la app.
   static void _registerCore() {
     instance.registerLazySingleton<KeyValueStorageService>(
       () => KeyValueStorageServiceImpl(),
@@ -43,6 +52,7 @@ class InjectorContainer {
     instance.registerLazySingleton(() => ConnectivityCubit(instance()));
   }
 
+  /// Delega los bindings de cada feature a su archivo DI especifico.
   static void _registerFeatures() {
     initAuthFeature();
     initLayoutFeature();

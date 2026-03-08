@@ -6,6 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
+/// Implementacion remota de autenticacion sobre Firebase Auth.
+///
+/// Ademas del login, persiste el idToken en almacenamiento seguro para
+/// permitir restaurar sesion en arranques posteriores.
 class AuthFirebaseDatasourceImpl extends AuthFirebaseDatasource {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
@@ -40,6 +44,7 @@ class AuthFirebaseDatasourceImpl extends AuthFirebaseDatasource {
   @override
   Future<UserApp> signInWithGoogle() async {
     try {
+      // Se inicializa con server client id para flujo compatible con backend.
       await _googleSignIn.initialize(
         serverClientId: Environments.firebaseClientId,
       );
@@ -125,7 +130,7 @@ class AuthFirebaseDatasourceImpl extends AuthFirebaseDatasource {
   Future<UserApp?> checkLogin() async {
     try {
       final token = await secureStorage.read("token");
-      // validar el token con Firebase para asegurarse de que es válido
+      // Se valida consistencia entre token persistido y usuario actual.
       if (token != null) {
         final user = _firebaseAuth.currentUser;
         if (user != null) {
@@ -137,12 +142,12 @@ class AuthFirebaseDatasourceImpl extends AuthFirebaseDatasource {
               name: user.displayName ?? "",
             );
           } else {
-            // El token almacenado no coincide con el token actual del usuario
+            // Si el token no coincide, se limpia para evitar sesion corrupta.
             await secureStorage.delete("token");
             return null;
           }
         } else {
-          // No hay usuario autenticado, eliminar token almacenado
+          // Si no hay usuario autenticado, el token cacheado se invalida.
           await secureStorage.delete("token");
           return null;
         }

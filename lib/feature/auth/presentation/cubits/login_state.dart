@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'login_state.freezed.dart';
 
+/// Estados posibles del flujo de autenticacion.
 @freezed
 class LoginState with _$LoginState {
   const factory LoginState.initial() = _Initial;

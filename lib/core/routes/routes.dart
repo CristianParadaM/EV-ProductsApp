@@ -13,6 +13,11 @@ import 'package:ev_products_app/feature/settings/presentation/screens/settings_s
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+/// Definicion del router principal de la app.
+///
+/// Las rutas publicas (splash/start/auth) viven al nivel superior.
+/// La navegacion autenticada se agrupa en un `ShellRoute` para compartir el
+/// mismo scaffold de navegacion inferior.
 final appRouter = GoRouter(
   initialLocation: '/splash',
   routes: [
@@ -48,6 +53,7 @@ final appRouter = GoRouter(
     ShellRoute(
       builder: (context, state, child) {
         return BlocProvider(
+          // El estado del layout se comparte entre todas las tabs del shell.
           create: (_) => InjectorContainer.instance<LayoutCubit>()..load(),
           child: MyNavigationBar(child: child),
         );
@@ -58,6 +64,7 @@ final appRouter = GoRouter(
           name: 'products',
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider(
+              // La lista de productos maneja su cubit por instancia de ruta.
               create: (_) =>
                   InjectorContainer.instance<ProductsCubit>()..load(limit: 10, offset: 1),
               child: ProductsPage(),
@@ -75,7 +82,9 @@ final appRouter = GoRouter(
 
             return NoTransitionPage(
               child: BlocProvider(
+                // Detail puede ejecutar operaciones de productos de forma aislada.
                 create: (_) => InjectorContainer.instance<ProductsCubit>(),
+                // Si el path param es invalido cae a 0; la pantalla lo maneja.
                 child: DetailPage(productId: productId ?? 0),
               ),
             );

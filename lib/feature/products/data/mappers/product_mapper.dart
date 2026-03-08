@@ -3,6 +3,7 @@ import 'package:ev_products_app/feature/products/data/models/product_model.dart'
 import 'package:ev_products_app/feature/products/domain/entities/category.dart';
 import 'package:ev_products_app/feature/products/domain/entities/product.dart';
 
+/// Mapper de productos entre capa de datos y dominio.
 class ProductMapper {
   static Product modelToDomain(ProductModel model) {
     return Product(
@@ -12,6 +13,7 @@ class ProductMapper {
       price: model.price,
       pricediscount: null,
       category: Category(
+        // El API entrega categoria embebida; se normaliza a entidad propia.
         id: (model.category['id'] as int?) ?? 0,
         name: model.category['name'] ?? '',
         slug: model.category['slug'] ?? '',

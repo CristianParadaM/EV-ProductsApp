@@ -1,3 +1,4 @@
+/// Modelo crudo de categoria proveniente de API.
 class CategoryModel {
   final int id;
   final String name;

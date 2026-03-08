@@ -3,6 +3,7 @@ import 'package:ev_products_app/feature/settings/domain/entities/settings.dart';
 import 'package:ev_products_app/feature/settings/domain/repositories/settings_repository.dart';
 import 'package:flutter/material.dart';
 
+/// Repositorio de ajustes que delega en datasource de preferencias.
 class SettingsRepositoryImp extends SettingsRepository {
   final AbsSettingsDatasource datasource;
 

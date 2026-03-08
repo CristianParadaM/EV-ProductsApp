@@ -1,3 +1,4 @@
+/// Entidad de usuario usada por la capa de dominio/presentacion.
 class UserApp {
   String id;
   String email;
