@@ -1,10 +1,12 @@
 import 'package:ev_products_app/core/di/injector_container.dart';
 import 'package:ev_products_app/core/l10n/app_localizations.dart';
+import 'package:ev_products_app/core/network/connectivity_cubit.dart';
 import 'package:ev_products_app/core/routes/routes.dart';
 import 'package:ev_products_app/core/theme/app_theme.dart';
 import 'package:ev_products_app/feature/auth/presentation/cubits/login_cubit.dart';
 import 'package:ev_products_app/feature/settings/presentation/cubits/settings_cubit.dart';
 import 'package:ev_products_app/feature/settings/presentation/cubits/settings_state.dart';
+import 'package:ev_products_app/feature/shared/snack_bar/snack_bar_custom.dart';
 import 'package:ev_products_app/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -23,11 +25,14 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => InjectorContainer.instance<AuthCubit>()..checkLogin(),
+        BlocProvider.value(
+          value: InjectorContainer.instance<ConnectivityCubit>(),
         ),
         BlocProvider(
           create: (_) => InjectorContainer.instance<SettingsCubit>()..load(),
+        ),
+        BlocProvider(
+          create: (_) => InjectorContainer.instance<AuthCubit>()..checkLogin(),
         ),
       ],
       child: const MyApp(),
@@ -35,8 +40,39 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  static final GlobalKey<ScaffoldMessengerState> appMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _hadConnectivityFailure = false;
+
+  void _showOfflineSnackbar(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    SnackbarCustom(context).hideSnackBar();
+    SnackbarCustom(context).showOfflineSnackBar(
+      l10n.offlineMessage,
+      onRetry: () {
+        context.read<ConnectivityCubit>().checkNow();
+      },
+      margin: EdgeInsets.only(bottom: 110, left: 20, right: 20),
+    );
+  }
+
+  void _showOnlineSnackbar(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    SnackbarCustom(context).hideSnackBar();
+    SnackbarCustom(context).showInfo(
+      l10n.onlineMessage,
+      margin: EdgeInsets.only(bottom: 110, left: 20, right: 20),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +95,7 @@ class MyApp extends StatelessWidget {
         );
 
         return MaterialApp.router(
-          title: 'Products App',
+          title: 'EV Products App',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: themeMode,
@@ -72,6 +108,22 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           routerConfig: appRouter,
+          builder: (context, child) {
+            return BlocListener<ConnectivityCubit, ConnectivityStatus>(
+              listener: (context, status) {
+                if (status == ConnectivityStatus.offline) {
+                  _hadConnectivityFailure = true;
+                  _showOfflineSnackbar(context);
+                } else {
+                  if (_hadConnectivityFailure) {
+                    _showOnlineSnackbar(context);
+                    _hadConnectivityFailure = false;
+                  }
+                }
+              },
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
           debugShowCheckedModeBanner: false,
         );
       },

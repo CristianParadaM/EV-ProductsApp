@@ -62,7 +62,7 @@ extension SnackbarCustom on BuildContext {
       dismissDirection: dismissDirection ?? DismissDirection.none,
       action: onRetry != null
           ? SnackBarAction(
-              label: 'Reintentar',
+              label: 'Entendido',
               textColor: Colors.white,
               onPressed: onRetry,
             )
