@@ -63,7 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '699995366858',
     projectId: 'ev-prodauthentication',
     storageBucket: 'ev-prodauthentication.firebasestorage.app',
+    androidClientId: '699995366858-b72jejqvl3nsf4b1lv0bn61olbg9t9t6.apps.googleusercontent.com',
     iosClientId: '699995366858-uhp5reia48ggjjfon6hn0bk1cieulj6l.apps.googleusercontent.com',
     iosBundleId: 'com.example.evProductsApp',
   );
+
 }
